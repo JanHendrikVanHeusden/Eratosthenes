@@ -32,7 +32,7 @@ For the *sieve of Eratosthenes* this is in fact the only possible approach, as y
 To allow comparison, I used the same approach for the "*try divide*" algorithms.
 This approach is fair if you wanted to find all primes from 2 up to a given number anyway; but a bit unfair in other use cases, e.g. "find all primes between 1000000 and 1000100" or just "is this number a prime?"; these use cases are not really usable with the *sieve of Eratosthenes* approach, but would fit well to the "*try divide*" approach.
 
-In other words, the "*try divide*" is much more versatile, but for comparison it is pushed into the harness dictated by the "sieve of Eratosthenes" algoritm.
+In other words, the naive "*try divide*" algorithm is much more versatile, but for comparison it is pushed into the harness dictated by the "*sieve of Eratosthenes*" algoritm.
 
 #### Details
 Furhter details of the results can be found in the kdoc header of each class file.
@@ -57,17 +57,17 @@ Furhter details of the results can be found in the kdoc header of each class fil
       * A lot slower than Eratosthenes
           * and much more so for higher numbers
       * No need to keep "previous" primes in memory, so usable for any number
-      * Usable for any number up to the language limit (say, any Int or Long)
+      * Usable for any number up to the language limit (say, any `Int` or `Long`)
    2. Same, but keeping previous primes in memory as denominators
-      * A bit slower(!) than the "simple" naive approach (which uses all lower numbers as denominators)
-        * Apperently iterating over and adding to the in-memory `List` takes more CPU than the simple "just anything" naive approach
+      * A bit slower(!) than the "simple" naive approach (which uses all lower numbers as denominators), so what was meant as optimization rather appeared a change for worse.
+        * Apperently iterating over and adding to the in-memory `List` takes more computation resources than the simple "just anything" naive approach
    3. Parallel streams
       * No success, **much much** slower than the naive approach, and consumes all available CPU resources
          * Some typical optimizations (early jumping out of a loop) are not possible within the parallel stream application
    4. RxJava
       * Naive approach combined with RxJava
       * Not any faster than the naive approach
-      * Uses much less memory as results are not kept in memory but emitted on the fly
+      * But uses much less memory as results are not kept in memory but emitted on the fly
    5. Kotlin coroutines using `Flow`
       * Naive approach combined with coroutines / `Flow`
       * Comparable (speed, memory) with the RxJava solution
@@ -76,5 +76,4 @@ Furhter details of the results can be found in the kdoc header of each class fil
       * Speed comparable with the RxJava and coroutines / `Flow` solution
       * High memory consumption when using unlimited channel capacity (`Channel.UNLIMITED`) !!
          * On my laptop / JVM it runs out of memory when finding primes up to about 300M; about the same point as the classic *sieve of Eratosthenes* approach.
-         * Switching to other capacity settings than `Channel.UNLIMITED` drops the speed by a factor 100 or 1000, which makes these nearly unusable for this use case.
-         * Further investigation why this is the case...? (to do)
+         * Switching to other capacity settings than `Channel.UNLIMITED` drops the speed by a factor 100 or 1000, which makes these nearly unusable for this use case. Might be worthwhile to further investigation why this is the case...? (to do)
