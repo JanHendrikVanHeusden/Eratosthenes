@@ -15,7 +15,7 @@ In this approach, you just try to divide a number by all possible lower numbers,
 * The basic algorithm is even more simple and straightforward 
 
 ### Global optimizations
-There are some global optizations that are applied to all processes:
+There are some global optizations that are applied to all approaches:
 * Skipping even numbers above 2
 * Limiting the denominators to the square root of the candidate value
 
