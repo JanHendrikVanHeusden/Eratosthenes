@@ -10,6 +10,7 @@ As I had some spare time to study, I decided to see how I could implement this a
     * [2. Naive approach: Try divide](#2-naive-approach-try-divide)
   * [Global optimizations](#global-optimizations)
     * [Further optimizations?](#further-optimizations)
+  * [No (unit) tests](#no-unit-tests)
   * [Comparing approaches](#comparing-approaches)
     * [Details](#details)
     * [Memory usage](#memory-usage)
@@ -46,6 +47,10 @@ Several further optimizations are possible, but not applied:
 * Many described optimizations try to stochastically determine whether a number is **not** a prime and exclude these.
 * Other optimizations are more like determing the chance if something is (not) a prime
 * In the naive *try divide* algorithms a preparing step could be added to find the first primes up to, say, 1000, and use these as denominators instead of just "any" number in this range; higher denominators would just follow the baise *try divide* pattern
+
+### No (unit) tests
+No unit tests or other tests are added. Each class file has a runnable `main` method.
+The goal was just to see what approaches and optimizations could be used with different techniques; not to create a mature production & life cycle hardened project.
 
 ### Comparing approaches
 All implementated approaches produce all primes from 2 up to a given max (say, 100M).
