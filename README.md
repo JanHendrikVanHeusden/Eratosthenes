@@ -4,7 +4,7 @@
 
 #### About this project
 Reading in one of my old study books I stumbled across the well-known [sieve of Eratosthenes](https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes) algorithm.
-As I had some spare time to study, I decided to see how I could implement this and other prime finding algorithms, and apply different approaches to these.
+As I had some spare time to study, I decided to see how I could implement this and other prime finding algorithms, and apply different approaches to these, among others using coroutines and RxJava.
 
 My goal was just to see what approaches and optimizations could be used with different techniques. It is not meant to be a mature production ready or life cycle friendly project.
 
