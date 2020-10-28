@@ -13,10 +13,10 @@ As I had some spare time to study, I decided to see how I could implement this a
     * [Details](#details)
     * [Memory usage](#memory-usage)
   * [Implemented approaches](#implemented-approaches)
-    * [1. Sieve of Eratosthenes](#1-sieve-of-eratosthenes)
+    * [1. Sieve of Eratosthenes](#sieve-of-eratosthenes-implementations)
       * [The classic Eratosthenes approach](#the-classic-eratosthenes-approach)
-      * [A variation of the classic Eratosthenes approach](#a-variation-of-the-classic-eratosthenes-approach)
-    * [2. Try divide](#2-try-divide)
+      * [Two variations of the classic Eratosthenes approach](#two-variations-of-the-classic-eratosthenes-approach)
+    * [2. Try divide](#try-divide-implementations)
       * [Just that, the naive approach](#just-that-the-naive-approach)
       * [Same, but keeping previous primes in memory as denominators](#same-but-keeping-previous-primes-in-memory-as-denominators)
       * [Parallel streams](#parallel-streams)
@@ -64,18 +64,18 @@ Furhter details of the results can be found in the kdoc header of each class fil
 * This does not work well in reactive approaches (RxJava & coroutines). The same figures are output, but they do not reflect the real memory usage during execution. For this, external tooling should be used (e.g. Visual VM; to do yet)
 
 ### Implemented approaches
-1. **Sieve of Eratosthenes**
+1. #### Sieve of Eratosthenes (implementations)
    1. ###### The classic Eratosthenes approach
       * Computationally really cheap, so by far the fastest (primes up to 100M in less 5s on my laptop)
       * Not scalable for seriously high numbers (say, above 250M), mainly because of memory usage
          * On my laptop / JVM it runs out of memory when finding primes higher than ~ 300M
       * Not suitable to determine if just a single given number is a prime
-   2. ###### A variation of the classic Eratosthenes approach
+   2. ###### Two variations of the classic Eratosthenes approach
       * Optimized for using less memory (say, -30%)
       * Quite a bit slower than the classic approach (~ 7 times slower)
       * Still not scalable for seriously high numbers
 
-2. **Try divide**
+2. #### Try divide (implementations)
    1. ###### Just that, the naive approach
       * A lot slower than Eratosthenes
           * and much more so for higher numbers; say 60 to 100 times slower
