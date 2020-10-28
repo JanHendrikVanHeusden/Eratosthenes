@@ -66,7 +66,7 @@ Furhter details of the results can be found in the kdoc header of each class fil
 ### Implemented approaches
 1. #### Sieve of Eratosthenes (implementations)
    1. ###### The classic Eratosthenes approach
-      * Computationally really cheap, so by far the fastest (primes up to 100M in less 5s on my laptop)
+      * Computationally really cheap, so by far the fastest (primes up to 100M in less than 5s on my laptop)
       * Not scalable for seriously high numbers (say, above 250M), mainly because of memory usage
          * On my laptop / JVM it runs out of memory when finding primes higher than ~ 300M
       * Not suitable to determine if just a single given number is a prime
