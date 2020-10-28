@@ -11,8 +11,9 @@ My goal was just to see what approaches and optimizations could be used with dif
 > For techies, you may want to jump to the [Implemented approaches](#implemented-approaches)
 > Or click below for the Table of Contents.
 
-<details>Click for Table of Contents
+<details>
 
+##### Table of Contents
 * [Eratosthenes & other approaches to prime finding algorithms](#eratosthenes--other-approaches-to-prime-finding-algorithms)
   * [Algorithm characteristics](#algorithm-characteristics)
     * [1. Sieve of Eratosthenes](#1-sieve-of-eratosthenes)
@@ -56,7 +57,7 @@ There are some global optizations that are applied to all approaches:
 * Skipping even numbers above 2
 * Limiting the denominators to the square root of the candidate value
 
-#### Further optimizations?
+##### Further optimizations?
 Several further optimizations are possible, but not applied:
 * Many described optimizations try to stochastically determine whether a number is **not** a prime and exclude these.
 * Other optimizations are more like determing the chance if something is (not) a prime
@@ -75,7 +76,7 @@ This approach is fair if you wanted to find all primes from 2 up to a given numb
 
 In other words, the naive "*try divide*" algorithm is more versatile and scalable (albeit slow), but for comparison it is pushed into the harness dictated by the "*sieve of Eratosthenes*" algoritm.
 
-#### Details
+##### Details
 Furhter details of the results can be found in the kdoc header of each class file.
 
 #### Memory usage
@@ -86,14 +87,14 @@ For this, external tooling should be used (e.g. Visual VM; to do yet)
 ### Implemented approaches
 1. #### Sieve of Eratosthenes (implementations)
    1. ###### The classic Eratosthenes approach
-      * Computationally really cheap, so by far the fastest (primes up to 100M in less than 5s on my laptop)
+      * Computationally really cheap, so **by far the fastest** (primes up to 100M in less than 5s on my laptop)
       * Not scalable for seriously high numbers (say, above 250M), mainly because of memory usage
          * On my laptop / JVM it runs out of memory when finding primes higher than ~ 300M
-      * Not suitable to determine if just a single given number is a prime
+      * Not very suitable to determine if just a single given number is a prime
    2. ###### Two variations of the classic Eratosthenes approach
       * Optimized for using less memory (say, -30%)
+         * Still, not scalable for seriously high numbers
       * Quite a bit slower than the classic approach (~ 7 times slower)
-      * Still not scalable for seriously high numbers
 
 2. #### Try divide (implementations)
    1. ###### Just that, the naive approach
