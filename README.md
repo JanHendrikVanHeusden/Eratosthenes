@@ -1,11 +1,13 @@
 ## Eratosthenes & other approaches to prime finding algorithms
 
+<summary>
+
+#### About this project
 Reading in one of my old study books I stumbled across the well-known [sieve of Eratosthenes](https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes) algorithm.
 As I had some spare time to study, I decided to see how I could implement this and other prime finding algorithms, and apply different approaches to these.
 
-<summary>
+My goal was just to see what approaches and optimizations could be used with different techniques. It is not meant to be a mature production ready or life cycle friendly project.
 
-#### Contents
 <details>
 
 * [Eratosthenes & other approaches to prime finding algorithms](#eratosthenes--other-approaches-to-prime-finding-algorithms)
@@ -58,7 +60,7 @@ Several further optimizations are possible, but not applied:
 
 ### No (unit) tests
 No unit tests or other tests are added. Each class file has a runnable `main` method.
-The goal was just to see what approaches and optimizations could be used with different techniques; not to create a mature production & life cycle hardened project.
+The goal was just to see what approaches and optimizations could be used with different techniques; not to create a mature production hardness & life cycle friendly project.
 
 ### Comparing approaches
 All implementated approaches produce all primes from 2 up to a given max (say, 100M).
