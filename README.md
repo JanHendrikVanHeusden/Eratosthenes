@@ -4,6 +4,7 @@ Reading in one of my old study books I stumbled across the well-known [sieve of 
 As I had some spare time to study, I decided to see how I could implement this and other prime finding algorithms, and apply different approaches to these.
 
 <TOC>Table of contents
+
 * [Eratosthenes & other approaches to prime finding algorithms](#eratosthenes--other-approaches-to-prime-finding-algorithms)
   * [Characteristics](#characteristics)
     * [1. Sieve of Eratosthenes](#1-sieve-of-eratosthenes)
