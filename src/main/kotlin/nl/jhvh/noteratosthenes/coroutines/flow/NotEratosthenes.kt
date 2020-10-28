@@ -14,6 +14,7 @@ import kotlin.math.sqrt
  * > Pro:
  * * Very simple algorithm
  * * contrary to the Eratosthenes algorithm, you CAN find a prime without determining all preceding primes
+ * * modest memory consumption
  * > Con:
  * * not really faster than the more simplistic (non-reactive, no coroutines) implementations of the naive algorithm
  *

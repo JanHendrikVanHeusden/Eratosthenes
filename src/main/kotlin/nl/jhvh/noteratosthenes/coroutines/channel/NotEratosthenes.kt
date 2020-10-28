@@ -19,8 +19,8 @@ import kotlin.math.sqrt
  * > Con:
  * * high memory consumption because of the unlimited channel, causes [OutOfMemoryError] when processing 300M candidates,
  *   so doing not really better there than the classic sieve of Eratosthenes algorithm
- *   * When we limit the [Channel] by stating any other value than the [Channel.UNLIMITED], the performance appears
- *     to be really disastrous somehow (???)
+ *    * When we limit the [Channel] by stating any other value than the [Channel.UNLIMITED], the performance appears
+ *      to be really disastrous somehow (???)
  * * not really faster than the more simplistic (non-reactive, no coroutines) implementations of the naive algorithm
  *
  * > The candidate values are all integers in the range `2..`[maxNum], inclusive.
