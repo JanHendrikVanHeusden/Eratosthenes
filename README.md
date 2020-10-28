@@ -8,8 +8,8 @@ As I had some spare time to study, I decided to see how I could implement this a
 
 My goal was just to see what approaches and optimizations could be used with different techniques. It is not meant to be a mature production ready or life cycle friendly project.
 
-> For techies, you may want to jump to the [Implemented approaches](#implemented-approaches)
-> Or click below for the Table of Contents.
+> For techies, you may want to jump to the [Implemented approaches](#implemented-approaches)  
+> Or click below on ► Details for the Table of Contents.
 
 <details>
 
