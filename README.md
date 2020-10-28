@@ -5,7 +5,8 @@ As I had some spare time to study, I decided to see how I could implement this a
 
 <summary>
 
-<Contents>
+#### Contents
+<details>
 
 * [Eratosthenes & other approaches to prime finding algorithms](#eratosthenes--other-approaches-to-prime-finding-algorithms)
   * [Characteristics](#characteristics)
@@ -29,7 +30,7 @@ As I had some spare time to study, I decided to see how I could implement this a
       * [Kotlin coroutines using Flow](#kotlin-coroutines-using-flow)
       * [Kotlin coroutines using Channel](#kotlin-coroutines-using-channel)
 
-</Contents>
+</details>
 
 </summary>
 
