@@ -1,7 +1,29 @@
 ## Eratosthenes & other approaches to prime finding algorithms
 
-Reading in one of my old study books I stumbled across the well known [sieve of Eratosthenes](https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes) algorithm.
-As I had some spare time, I decided to see how I could implement this and other prime finding algorithms, and apply different approaches to these.
+Reading in one of my old study books I stumbled across the well-known [sieve of Eratosthenes](https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes) algorithm.
+As I had some spare time to study, I decided to see how I could implement this and other prime finding algorithms, and apply different approaches to these.
+
+* [Eratosthenes & other approaches to prime finding algorithms](#eratosthenes--other-approaches-to-prime-finding-algorithms)
+  * [Characteristics](#characteristics)
+    * [1. Sieve of Eratosthenes](#1-sieve-of-eratosthenes)
+    * [2. Naive approach: Try divide](#2-naive-approach-try-divide)
+  * [Global optimizations](#global-optimizations)
+    * [Further optimizations?](#further-optimizations)
+  * [Comparing approaches](#comparing-approaches)
+    * [Details](#details)
+    * [Memory usage](#memory-usage)
+  * [Implemented approaches](#implemented-approaches)
+    * [1. Sieve of Eratosthenes](#1-sieve-of-eratosthenes)
+      * [The classic Eratosthenes approach](#the-classic-eratosthenes-approach)
+      * [A variation of the classic Eratosthenes approach](#a-variation-of-the-classic-eratosthenes-approach)
+    * [2. Try divide](#2-try-divide)
+      * [Just that, the naive approach](#just-that-the-naive-approach)
+      * [Same, but keeping previous primes in memory as denominators](#same-but-keeping-previous-primes-in-memory-as-denominators)
+      * [Parallel streams](#parallel-streams)
+      * [RxJava](#rxjava)
+      * [Kotlin coroutines using Flow](#kotlin-coroutines-using-flow)
+      * [Kotlin coroutines using Channel](#kotlin-coroutines-using-channel)
+
 
 ### Characteristics
 #### 1. Sieve of Eratosthenes
@@ -43,37 +65,38 @@ Furhter details of the results can be found in the kdoc header of each class fil
 
 ### Implemented approaches
 1. **Sieve of Eratosthenes**
-   1. The classic Eratosthenes approach
-      * Computationally really easy, so by far the fastest
+   1. ###### The classic Eratosthenes approach
+      * Computationally really cheap, so by far the fastest (primes up to 100M in less 5s on my laptop)
       * Not scalable for seriously high numbers (say, above 250M), mainly because of memory usage
-         * On my laptop / JVM it runs out of memory when finding primes up to about 300M
+         * On my laptop / JVM it runs out of memory when finding primes higher than ~ 300M
       * Not suitable to determine if just a single given number is a prime
-   2. A variation of the classic Eratosthenes approach
+   2. ###### A variation of the classic Eratosthenes approach
       * Optimized for using less memory (say, -30%)
-      * Quite a bit slower than the classic approach
+      * Quite a bit slower than the classic approach (~ 7 times slower)
       * Still not scalable for seriously high numbers
+
 2. **Try divide**
-   1. Just that, the naive approach
+   1. ###### Just that, the naive approach
       * A lot slower than Eratosthenes
-          * and much more so for higher numbers
+          * and much more so for higher numbers; say 60 to 100 times slower
       * No need to keep "previous" primes in memory, so usable for any number
       * Usable for any number up to the language limit (say, any `Int` or `Long`)
-   2. Same, but keeping previous primes in memory as denominators
+   2. ###### Same, but keeping previous primes in memory as denominators
       * A bit slower(!) than the "simple" naive approach (which uses all lower numbers as denominators), so what was meant as optimization rather appeared a change for worse.
         * Apperently iterating over and adding to the in-memory `List` takes more computation resources than the simple "just anything" naive approach
-   3. Parallel streams
+   3. ###### Parallel streams
       * No success, **much much** slower than the naive approach, and consumes all available CPU resources
          * Some typical optimizations (early jumping out of a loop) are not possible within the parallel stream application
-   4. RxJava
+   4. ###### RxJava
       * Naive approach combined with RxJava
       * Not any faster than the naive approach
       * But uses much less memory as results are not kept in memory but emitted on the fly
-   5. Kotlin coroutines using `Flow`
+   5. ###### Kotlin coroutines using `Flow`
       * Naive approach combined with coroutines / `Flow`
       * Comparable (speed, memory) with the RxJava solution
-   6. Kotlin coroutines using `Channel`
+   6. ###### Kotlin coroutines using `Channel`
       * Naive approach combined with coroutines / `Channel`
       * Speed comparable with the RxJava and coroutines / `Flow` solution
       * High memory consumption when using unlimited channel capacity (`Channel.UNLIMITED`) !!
-         * On my laptop / JVM it runs out of memory when finding primes up to about 300M; about the same point as the classic *sieve of Eratosthenes* approach.
+         * On my laptop / JVM it runs out of memory after 20 minutes or so when finding primes up to about 300M; so even more memory usage as the classic *sieve of Eratosthenes* approach.
          * Switching to other capacity settings than `Channel.UNLIMITED` drops the speed by a factor 100 or 1000, which makes these nearly unusable for this use case. Might be worthwhile to further investigation why this is the case...? (to do)
