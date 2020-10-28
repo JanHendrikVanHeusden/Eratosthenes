@@ -36,6 +36,7 @@ My goal was just to see what approaches and optimizations could be used with dif
       * [RxJava with parallelism](#rxjava-with-parallelism)
       * [Kotlin coroutines using Flow](#kotlin-coroutines-using-flow)
       * [Kotlin coroutines using Channel](#kotlin-coroutines-using-channel)
+  * [Some conclusions](#some-conclusions)
 
 </details>
 
