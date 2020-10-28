@@ -8,10 +8,13 @@ As I had some spare time to study, I decided to see how I could implement this a
 
 My goal was just to see what approaches and optimizations could be used with different techniques. It is not meant to be a mature production ready or life cycle friendly project.
 
-<details>
+> For techies, you may want to jump to the [Implemented approaches](#implemented-approaches)
+> Or click below for the Table of Contents.
+
+<details>Click for Table of Contents
 
 * [Eratosthenes & other approaches to prime finding algorithms](#eratosthenes--other-approaches-to-prime-finding-algorithms)
-  * [Characteristics](#characteristics)
+  * [Algorithm characteristics](#algorithm-characteristics)
     * [1. Sieve of Eratosthenes](#1-sieve-of-eratosthenes)
     * [2. Naive approach: Try divide](#2-naive-approach-try-divide)
   * [Global optimizations](#global-optimizations)
@@ -29,6 +32,7 @@ My goal was just to see what approaches and optimizations could be used with dif
       * [Same, but keeping previous primes in memory as denominators](#same-but-keeping-previous-primes-in-memory-as-denominators)
       * [Parallel streams](#parallel-streams)
       * [RxJava](#rxjava)
+      * [RxJava with parallelism](#rxjava-with-parallelism)
       * [Kotlin coroutines using Flow](#kotlin-coroutines-using-flow)
       * [Kotlin coroutines using Channel](#kotlin-coroutines-using-channel)
 
@@ -36,7 +40,7 @@ My goal was just to see what approaches and optimizations could be used with dif
 
 </summary>
 
-### Characteristics
+### Algorithm characteristics
 #### 1. Sieve of Eratosthenes
 See https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes.
 * A characteristic of the sieve of Eratosthenes is that it is not scalable to really high numbers (because you have to keep all previous primes in memory)
@@ -59,24 +63,25 @@ Several further optimizations are possible, but not applied:
 * In the naive *try divide* algorithms a preparing step could be added to find the first primes up to, say, 1000, and use these as denominators instead of just "any" number in this range; higher denominators would just follow the baise *try divide* pattern
 
 ### No (unit) tests
-No unit tests or other tests are added. Each class file has a runnable `main` method.
+No unit tests or other tests are added. Each class file has a runnable `main` method.  
 The goal was just to see what approaches and optimizations could be used with different techniques; not to create a mature production hardness & life cycle friendly project.
 
 ### Comparing approaches
 All implementated approaches produce all primes from 2 up to a given max (say, 100M).
-For the *sieve of Eratosthenes* this is in fact the only possible approach, as you can't find a higher prime value until you found all previous ones.
+> For the *sieve of Eratosthenes* this is in fact the only possible approach, as you can't find a higher prime value until you found all previous ones.
 
-To allow comparison, I used the same approach for the "*try divide*" algorithms.
+To allow comparison, I used the same approach for the "*try divide*" algorithms.  
 This approach is fair if you wanted to find all primes from 2 up to a given number anyway; but a bit unfair in other use cases, e.g. "find all primes between 1000000 and 1000100" or just "is this number a prime?"; these use cases are not really usable with the *sieve of Eratosthenes* approach, but would fit well to the "*try divide*" approach.
 
-In other words, the naive "*try divide*" algorithm is much more versatile, but for comparison it is pushed into the harness dictated by the "*sieve of Eratosthenes*" algoritm.
+In other words, the naive "*try divide*" algorithm is more versatile and scalable (albeit slow), but for comparison it is pushed into the harness dictated by the "*sieve of Eratosthenes*" algoritm.
 
 #### Details
 Furhter details of the results can be found in the kdoc header of each class file.
 
 #### Memory usage
 * For the non-reactive approaches, the memory usage is determined statically during execution, and is output to the terminal.
-* This does not work well in reactive approaches (RxJava & coroutines). The same figures are output, but they do not reflect the real memory usage during execution. For this, external tooling should be used (e.g. Visual VM; to do yet)
+* This does not work well in reactive approaches (RxJava & coroutines). The same figures are output, but they do not reflect the real memory usage during execution.  
+For this, external tooling should be used (e.g. Visual VM; to do yet)
 
 ### Implemented approaches
 1. #### Sieve of Eratosthenes (implementations)
@@ -106,12 +111,26 @@ Furhter details of the results can be found in the kdoc header of each class fil
       * Naive approach combined with RxJava
       * Not any faster than the naive approach
       * But uses much less memory as results are not kept in memory but emitted on the fly
-   5. ###### Kotlin coroutines using `Flow`
+   5. ###### RxJava with parallelism
+      * Slightly SLOWER than the non-parallel RxJava implementation
+         * Different degrees of parallelism (say, 2 to >16) did not make much difference
+         * Apparently the needed coordination of multiple threads takes more time than the theoretical benefit of running on mulitple threads / cores can compensate for.
+   6. ###### Kotlin coroutines using `Flow`
       * Naive approach combined with coroutines / `Flow`
       * Comparable (speed, memory) with the RxJava solution
-   6. ###### Kotlin coroutines using `Channel`
+   7. ###### Kotlin coroutines using `Channel`
       * Naive approach combined with coroutines / `Channel`
       * Speed comparable with the RxJava and coroutines / `Flow` solution
       * High memory consumption when using unlimited channel capacity (`Channel.UNLIMITED`) !!
          * On my laptop / JVM it runs out of memory after 20 minutes or so when finding primes up to about 300M; so even more memory usage as the classic *sieve of Eratosthenes* approach.
-         * Switching to other capacity settings than `Channel.UNLIMITED` drops the speed by a factor 100 or 1000, which makes these nearly unusable for this use case. Might be worthwhile to further investigation why this is the case...? (to do)
+         * Switching to other capacity settings than `Channel.UNLIMITED` drops the speed by a factor 100 or 1000, which makes these nearly unusable for this use case.  
+Might be worthwhile to further investigate why this is the case...? (to do)
+
+### Some conclusions
+After all, coroutines and RxJava in this context appear not to give much performance improvement (sometimes rather the contrary), but they reduce memory usage as primes can be produced and consumed concurrently.
+Part of this can also be achieved by using `Sequence` instead of `Collection`. 
+
+So the benefits of these are not as much as I hoped in advance; mainly because it makes not much sense to suspend calculations: we do not have remote calls etc. that we can call asynchronously (and where we could use the spare time to run other tasks).
+> If fact we are just consuming all time to produce primes, so no "suspended" time we could take profit from
+
+Hence this is not the best show case for coroutines or RxJava 😉
