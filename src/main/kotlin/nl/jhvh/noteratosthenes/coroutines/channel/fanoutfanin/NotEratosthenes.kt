@@ -45,6 +45,7 @@ class NotEratosthenes(val maxNum: Int) {
 
     val candidates: Iterable<Int> = (1..maxNum step 2).asIterable().asSequence().map { if (it == 1) 2 else it }.asIterable()
     private val maxCoroutines = 10_000
+    private val channelBufferSize = 10_000 // gives a few 100ms performance boost at lower numbers (high emit pace)
     private val candidateCount = AtomicInteger(0)
     private val candidatePrimeCheckCount = AtomicInteger(0)
 
@@ -76,7 +77,7 @@ class NotEratosthenes(val maxNum: Int) {
                     while (true) {
                         // makes no sense to first check if iterator.hasNext() is true,
                         // other threads may call next() concurrently.
-                        // So just call iterator.next() and catch the exception
+                        // So just do iterator.next() and catch the exception
                         synchronized(intProducer) {
                             // iterator.next() is not thread safe !
                             candidate = intProducer.next()
@@ -104,7 +105,7 @@ class NotEratosthenes(val maxNum: Int) {
      */
     @ExperimentalCoroutinesApi
     fun primes(): Channel<Int> {
-        val primeChannel = Channel<Int>()
+        val primeChannel = Channel<Int>(channelBufferSize)
         val coroutineCount = min(max(sqrt(maxNum.toDouble()).toInt(), 1), maxCoroutines)
         println("# of coroutines = $coroutineCount")
         val candidateIterator = candidates.iterator()
