@@ -4,8 +4,8 @@ import nl.jhvh.util.printMemUsage
 import kotlin.math.sqrt
 
 /**
- * Implements a naive algorithm to determine prime numbers by dividing a candidate by all preceding numbers
- * and check if the remainder is 0; if so, it's not a prime
+ * Implements a naive approach of the try divide algorithm to determine prime numbers by dividing a candidate by all
+ * preceding numbers and check if the remainder is 0; if so, it's not a prime
  *
  * > Pro:
  * * Very simple algorithm

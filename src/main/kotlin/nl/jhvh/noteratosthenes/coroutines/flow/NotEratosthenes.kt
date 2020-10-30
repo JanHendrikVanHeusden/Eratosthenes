@@ -8,7 +8,7 @@ import kotlin.math.min
 import kotlin.math.sqrt
 
 /**
- * Implements a naive algorithm to determine prime numbers by dividing a candidate by all preceding numbers
+ * Implements a try divide algorithm to determine prime numbers by dividing a candidate by all preceding numbers
  * and check if the remainder is 0; if so, it's not a prime; it does so using Kotlin coroutines with [Flow]
  *
  * > Pro:
@@ -16,7 +16,7 @@ import kotlin.math.sqrt
  * * contrary to the Eratosthenes algorithm, you CAN find a prime without determining all preceding primes
  * * modest memory consumption
  * > Con:
- * * not really faster than the more simplistic (non-reactive, no coroutines) implementations of the naive algorithm
+ * * not really faster than the more simplistic (non-reactive, no coroutines) implementations of the try divide algorithm
  *
  * > The candidate values are all integers in the range `2..`[maxNum], inclusive.
  * @param maxNum The end value of the range of candidate values

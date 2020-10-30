@@ -10,7 +10,7 @@ import nl.jhvh.util.printMemUsage
 import kotlin.math.sqrt
 
 /**
- * Implements a naive algorithm to determine prime numbers by dividing a candidate by all preceding numbers
+ * Implements a try divide algorithm to determine prime numbers by dividing a candidate by all preceding numbers
  * and check if the remainder is 0; if so, it's not a prime; it does so using Kotlin coroutines with [Channel]
  *
  * > Pro:
@@ -21,7 +21,7 @@ import kotlin.math.sqrt
  *   so doing not really better there than the classic sieve of Eratosthenes algorithm
  *    * When we limit the [Channel] by stating any other value than the [Channel.UNLIMITED], the performance appears
  *      to be really disastrous somehow (???)
- * * not really faster than the more simplistic (non-reactive, no coroutines) implementations of the naive algorithm
+ * * not really faster than the more simplistic (non-reactive, no coroutines) implementations of the try divide algorithm
  *
  * > The candidate values are all integers in the range `2..`[maxNum], inclusive.
  * @param maxNum The end value of the range of candidate values

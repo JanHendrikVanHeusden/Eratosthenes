@@ -16,7 +16,7 @@ import kotlin.math.sqrt
  * > Con:
  * * like with the Eratosthenes algorithm, you can only find a higher prime by determining all preceding primes down to 2 as well
  * * it is slow...! It takes more time to find 1M primes than it takes for [nl.jhvh.eratosthenes.classic.Eratosthenes] to find 100M primes...!
- *   * In fact, it is even a lot SLOWER than the naive approach in [nl.jhvh.noteratosthenes.naive.NotEratosthenes],
+ *   * In fact, it is even a lot SLOWER than the naive try divide approach in [nl.jhvh.noteratosthenes.naive.NotEratosthenes],
  *     it seems that storing the previous primes and iterating over it takes more time than just trying all values, prime or not
  *
  * > The candidate values are all integers in the range `2..`[maxNum], inclusive.
