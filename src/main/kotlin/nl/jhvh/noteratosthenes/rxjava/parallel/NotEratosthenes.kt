@@ -8,7 +8,7 @@ import nl.jhvh.util.printMemUsage
 import kotlin.math.sqrt
 
 /**
- * Implements a naive algorithm to determine prime numbers by dividing a candidate by all preceding numbers
+ * Implements a try divide algorithm to determine prime numbers by dividing a candidate by all preceding numbers
  * and check if the remainder is 0; if so, it's not a prime; it does so in a reactive way, using RxJava with parallelism.
  *
  * > Pro:
@@ -60,18 +60,25 @@ class NotEratosthenes(val maxNum: Int) {
      *   * this is transparent for this method, it does not impact the method
      */
     fun primes(): ParallelFlowable<Int> {
-        val flowable: Flowable<Int> = Flowable.create({
+        val flowable: Flowable<Int> = Flowable.create({ emitter ->
             val iterator = candidates.iterator()
-            while (iterator.hasNext()) {
-                var candidate: Int
-                do {
-                    candidate = iterator.next()
-                } while (iterator.hasNext() && !isPrime(candidate))
-                if (iterator.hasNext()) {
-                    it.onNext(candidate)
-                } else {
-                    it.onComplete()
+            try {
+                while (true) {
+                    // makes no sense to first check if iterator.hasNext() is true,
+                    // other threads may call next() concurrently.
+                    // So just do iterator.next() and catch the exception
+                    var candidate: Int
+                    // iterator.next() is not thread safe !
+                    do {
+                        synchronized(iterator) {
+                            candidate = iterator.next()
+                        }
+                    } while (!isPrime(candidate))
+                    emitter.onNext(candidate)
                 }
+            } catch (nsee: NoSuchElementException) {
+                // iterator has no values anymore -> completed successfully
+                emitter.onComplete()
             }
         }, BackpressureStrategy.BUFFER)
         return flowable.parallel() // defaults to the CPU core count
