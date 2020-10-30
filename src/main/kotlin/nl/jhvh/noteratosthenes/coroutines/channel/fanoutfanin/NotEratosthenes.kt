@@ -2,7 +2,6 @@ package nl.jhvh.noteratosthenes.coroutines.channel.fanoutfanin
 
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
@@ -103,7 +102,6 @@ class NotEratosthenes(val maxNum: Int) {
      * * Even numbers except 2 are excluded beforehand
      *   * this is transparent for this method, it does not impact the method
      */
-    @ExperimentalCoroutinesApi
     fun primes(): Channel<Int> {
         val primeChannel = Channel<Int>(channelBufferSize)
         val coroutineCount = min(max(sqrt(maxNum.toDouble()).toInt(), 1), maxCoroutines)
@@ -128,7 +126,6 @@ class NotEratosthenes(val maxNum: Int) {
     }
 }
 
-@ExperimentalCoroutinesApi
 fun main() {
     println(">>> Try divide - coroutines fan out / fan in (not Eratosthenes)")
 
