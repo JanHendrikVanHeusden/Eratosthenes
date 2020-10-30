@@ -99,7 +99,7 @@ This approach is fair if you wanted to find all primes from 2 up to a given numb
 In other words, the naive "*try divide*" algorithm is more versatile and scalable (albeit slow), but for comparison it is pushed into the harness dictated by the "*sieve of Eratosthenes*" algoritm.
 
 ##### Details
-Furhter details of the results can be found in the kdoc header of each class file.
+Further details of the results can be found in the kdoc header of each class file.
 
 #### Memory usage
 * For the non-reactive approaches, the memory usage is determined statically during execution, and is output to the terminal.
