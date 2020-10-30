@@ -44,16 +44,16 @@ class NotEratosthenes(val maxNum: Int) {
     }
 
     val candidates: Iterable<Int> = (1..maxNum step 2).asIterable().asSequence().map { if (it == 1) 2 else it }.asIterable()
-    val maxCoroutines = 10_000
-    val candidateCount = AtomicInteger(0)
-    val candidatePrimeCheckCount = AtomicInteger(0)
+    private val maxCoroutines = 10_000
+    private val candidateCount = AtomicInteger(0)
+    private val candidatePrimeCheckCount = AtomicInteger(0)
 
     init {
         print("After allocating candidates: ")
         printMemUsage()
     }
 
-    suspend fun sendIfPrime(candidate: Int, channelOut: SendChannel<Int>) {
+    private suspend fun sendIfPrime(candidate: Int, channelOut: SendChannel<Int>) {
         val maxPrimeToTry = sqrt(candidate.toDouble()).toInt()
         var maybePrime = true
         for (denominator in (2..maxPrimeToTry)) {
@@ -68,10 +68,10 @@ class NotEratosthenes(val maxNum: Int) {
         candidatePrimeCheckCount.incrementAndGet()
     }
 
-    fun CoroutineScope.launchPrimeChecker(intProducer: Iterator<Int>, channelOut: SendChannel<Int>): Job {
-        val primeCheckerJob = launch {
+    private fun CoroutineScope.launchPrimeChecker(intProducer: Iterator<Int>, channelOut: SendChannel<Int>): Job {
+        return launch {
             try {
-                var candidate: Int = 0
+                var candidate = 0
                 try {
                     while (true) {
                         // makes no sense to first check if iterator.hasNext() is true,
@@ -89,11 +89,10 @@ class NotEratosthenes(val maxNum: Int) {
                 }
             } catch (e: Exception) {
                 val cancellationException = CancellationException("Cancelled due to ${e.javaClass.simpleName}: ${e.message}", e)
-                this.coroutineContext.cancel(cancellationException)
+                coroutineContext.cancel(cancellationException)
                 channelOut.close(cancellationException)
             }
         }
-        return primeCheckerJob
     }
 
     /**
@@ -109,7 +108,6 @@ class NotEratosthenes(val maxNum: Int) {
         val coroutineCount = min(max(sqrt(maxNum.toDouble()).toInt(), 1), maxCoroutines)
         println("# of coroutines = $coroutineCount")
         val candidateIterator = candidates.iterator()
-        val jobs: MutableList<Job> = mutableListOf()
         val closeChannelWhenComplete: () -> Unit = {
             if (candidatePrimeCheckCount.get() == candidateCount.get() && !candidateIterator.hasNext()) {
 //                println("candidatePrimeCheckCount: $candidatePrimeCheckCount")
@@ -121,9 +119,8 @@ class NotEratosthenes(val maxNum: Int) {
         GlobalScope.launch {
             for (coroutineNr in 1..coroutineCount) {
 //                println("Launching prime checker #$coroutineNr")
-                val job = launchPrimeChecker(candidateIterator, primeChannel)
+                val job: Job = launchPrimeChecker(candidateIterator, primeChannel)
                 job.invokeOnCompletion { closeChannelWhenComplete.invoke() }
-                jobs.add(job)
             }
         }
         return primeChannel
