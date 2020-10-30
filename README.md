@@ -10,14 +10,31 @@ As I had some spare time to study, I decided to see how I could implement this a
 My goal was to see how they would behave and find out how they could be optimized (speed, memory, resources).
 It was never meant to be a mature production ready or life cycle friendly project.
 
+----
+#### Clear winners
+* For not too high numbers: the **classic Eratoshenes** algorithm
+   * Its simplicity and speed are unbeatable
+   * Not feasible for really high numbers (say, above 300M) due to the high memory consumption (`OutOfMemoryError`)
+* For higher numbers: the try-divide implementation with concurrent coroutines
+   * Fastest implementation for higher numbers
+      * uses 100% CPU resources
+      * still over 30 times slower than the classic Eratothenes algorithm
+   * Low memory usage, able to crunch > 1G candidates without strain
+   * Code much more complicated
+      * less coherent, less intuitive, less maintainable
+
 > * For techies, you may want to jump to the **[Implemented approaches](#implemented-approaches)**  
 > * Or you may want to see **[Some conclusions](#some-conclusions)**  
 > * Or click below on ► Details for the Table of Contents.
+
+----
 
 <details>
 
 ##### Table of Contents
 * [Eratosthenes & other approaches to prime finding algorithms](#eratosthenes--other-approaches-to-prime-finding-algorithms)
+  * [About this project](#about-this-project)
+  * [Clear winners](#clear-winners)
   * [Algorithm characteristics](#algorithm-characteristics)
     * [1. Sieve of Eratosthenes](#1-sieve-of-eratosthenes)
     * [2. Naive approach: Try divide](#2-naive-approach-try-divide)
@@ -39,8 +56,9 @@ It was never meant to be a mature production ready or life cycle friendly projec
       * [RxJava with parallelism](#rxjava-with-parallelism)
       * [Kotlin coroutines using Flow](#kotlin-coroutines-using-flow)
       * [Kotlin coroutines using Channel](#kotlin-coroutines-using-channel)
+      * [Kotlin concurrent coroutines using Channel with fan-out / fan-in](#kotlin-coroutines-using-channel)
   * [Some conclusions](#some-conclusions)
-
+----
 </details>
 
 </summary>
@@ -86,7 +104,8 @@ Furhter details of the results can be found in the kdoc header of each class fil
 #### Memory usage
 * For the non-reactive approaches, the memory usage is determined statically during execution, and is output to the terminal.
 * This does not work well in reactive approaches (RxJava & coroutines). The same figures are output, but they do not reflect the real memory usage during execution.  
-For this, external tooling should be used (e.g. Visual VM; to do yet)
+   > ***To do yet***  
+   > For this, external tooling should be used (e.g. Visual VM)
 
 ### Implemented approaches
 1. #### Sieve of Eratosthenes (implementations)
@@ -107,35 +126,52 @@ For this, external tooling should be used (e.g. Visual VM; to do yet)
       * No need to keep "previous" primes in memory, so usable for any number
       * Usable for any number up to the language limit (say, any `Int` or `Long`)
    2. ###### Same, but keeping previous primes in memory as denominators
-      * A bit slower(!) than the "simple" naive approach (which uses all lower numbers as denominators), so what was meant as optimization rather appeared a change for worse.
-        * Apperently iterating over and adding to the in-memory `List` takes more computation resources than the simple "just anything" naive approach
+      * A bit slower(!) than the "simple" try divde approach (which uses all lower numbers as denominators), so what was meant as optimization rather appeared a change for worse.
+        * Apperently iterating over and adding to the in-memory `List` takes more computation resources than the simple "just anything" naive try divide approach
    3. ###### Parallel streams
-      * No success, **much much** slower than the naive approach, and consumes all available CPU resources
+      * No success, **much much** slower than the naive try divide approach, and consumes all available CPU resources
          * Some typical optimizations (early jumping out of a loop) are not possible within the parallel stream application
    4. ###### RxJava
-      * Naive approach combined with RxJava
-      * Not any faster than the naive approach
+      * Try divide approach combined with RxJava
+      * Not any faster than the naive try divide approach
       * But uses much less memory as results are not kept in memory but emitted on the fly
+      * Slightly more complicated / less intuitive code than non-RxJava approach
+      * So main benefit of using RxJava in this approach is low memory consumption compared to returning collection
    5. ###### RxJava with parallelism
       * Slightly SLOWER than the non-parallel RxJava implementation
          * Different degrees of parallelism (say, 2 to >16) did not make much difference
          * Apparently the needed coordination of multiple threads takes more time than the theoretical benefit of running on mulitple threads / cores can compensate for.
    6. ###### Kotlin coroutines using `Flow`
-      * Naive approach combined with coroutines / `Flow`
+      * Try divide approach combined with coroutines / `Flow`
       * Comparable (speed, memory) with the RxJava solution
+      * No more complicated than the non-coroutine approach; a bit simpler than with RxJava
+      * So main benefit of using coroutines in this approach is low memory consumption compared to returning collection
    7. ###### Kotlin coroutines using `Channel`
-      * Naive approach combined with coroutines / `Channel`
+      * Try divide approach combined with coroutines / `Channel`
       * Speed comparable with the RxJava and coroutines / `Flow` solution
       * High memory consumption when using unlimited channel capacity (`Channel.UNLIMITED`) !!
-         * On my laptop / JVM it runs out of memory after 20 minutes or so when finding primes up to about 300M; so even more memory usage as the classic *sieve of Eratosthenes* approach.
+         * On my laptop / JVM it runs out of memory after ~ 20 minutes when finding primes up to about 300M; so even more memory usage as the classic *sieve of Eratosthenes* approach.
          * Switching to other capacity settings than `Channel.UNLIMITED` drops the speed by a factor 100 or 1000, which makes these nearly unusable for this use case.  
-Might be worthwhile to further investigate why this is the case...? (to do)
-
+           > ***To do yet***   
+           Might be worthwhile to further investigate why this is the case...? 
+      * Anyhow, not a feasible approach, as it uses as many or more resources than anything else, without better performance
+   8. ##### Kotlin concurrent coroutines using `Channel` with fan-out / fan-in
+      > Fan out / fan in approach inspired by https://kotlinlang.org/docs/reference/coroutines/channels.html
+      * The only approach to beat the naive try divide, about 4 times faster (on my 8-core laptop)
+         * But still way slower than the classic Eratothenes algorithm (over 6.5 minute for 300M candidates, Eratosthenes algorithm does that in 12.3 s, so more than 30 times slower than the Eratosthenes sieve)
+      * Low memory consumption
+         * The only one to crunch 1G candidates in a somewhat feasible timespan (37 minutes)
+            * Other approaches are either *way slower* or *crash* with `OutOfMemoryError` for anything above ~ 300M candidates.
+      * At the downside, the code is much more complicated, less intuitive, harder to maintain
+          * Architecturally: less coherent, more internal coupling
+      
 ### Some conclusions
-After all, coroutines and RxJava in this context appear not to give much performance improvement (sometimes rather the contrary), but they reduce memory usage as primes can be produced and consumed concurrently.
-Part of this can also be achieved by using `Sequence` instead of `Collection`. 
-
-So the benefits of these are not as much as I hoped in advance; mainly because it makes not much sense to suspend calculations: we do not have remote calls etc. that we can call asynchronously (and where we could use the spare time to run other tasks).
-> If fact we are just consuming all time to produce primes, so no "suspended" time we could take profit from
-
-Hence this is not the best show case for coroutines or RxJava 😉
+* Coroutines and RxJava reduce memory usage as primes can be produced and consumed concurrently.  
+  > Part of this can also be achieved by using `Sequence` instead of `Collection`.
+* Running RxJava with parallel option does not offer any benefit for this use case, neither in speed nor in memory, while consuming all CPU resources
+* Concurrent coroutines (fan out / fan in approach) give a nice performance boost
+   * but much more complicated / less coherent code
+   * consumes all CPU resources
+   * scalable, does not run out of memory on high counts
+  > For not too high candidate counts, the classic sieve of Eratosthenes algorithm is still unbeatable
+* Non-concurrent coroutines and non-parallel RxJava reduce memory usage, but do not improve speed
