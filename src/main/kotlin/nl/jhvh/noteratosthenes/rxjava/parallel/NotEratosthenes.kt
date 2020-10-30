@@ -64,13 +64,13 @@ class NotEratosthenes(val maxNum: Int) {
             val iterator = candidates.iterator()
             try {
                 while (true) {
+                    var candidate: Int
                     // makes no sense to first check if iterator.hasNext() is true,
                     // other threads may call next() concurrently.
                     // So just do iterator.next() and catch the exception
-                    var candidate: Int
-                    // iterator.next() is not thread safe !
                     do {
                         synchronized(iterator) {
+                            // iterator.next() is not thread safe !
                             candidate = iterator.next()
                         }
                     } while (!isPrime(candidate))
